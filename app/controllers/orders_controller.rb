@@ -2,11 +2,23 @@ class OrdersController < ApplicationController
 
   def show
     @order = Order.find(params[:id])
+    @line_items = LineItem.where(order_id: @order.id)
   end
 
   def create
     charge = perform_stripe_charge
     order  = create_order(charge)
+
+    # enhanced_cart.each do |entry|
+    #   product = entry[:product]
+    #   quantity = entry[:quantity]
+    #   order.line_items.new(
+    #     product: product,
+    #     quantity: quantity,
+    #     item_price: product.price,
+    #     total_price: product.price * quantity
+    #   )
+    # end
 
     if order.valid?
       empty_cart!
